@@ -1,0 +1,91 @@
+<html>
+<body>
+<canvas width="640px" height="480px" id="c1" style="border:1px solid #d3d3d3;">
+</canvas>
+<script type="text/javascript">
+	var estadoAplicativo = "Reta";
+	var startX = 0;
+	var startY = 0;
+	var c = document.getElementById("c1");
+	var ctx = c.getContext("2d");
+	var imagemPronta = false;
+	var apertou = false;
+	var color = '#ff0000';
+	var	arrayCores	= ["#000000","#FF1C07","#FFFA00","#22FF00","#FF0D84","#0700FF","#2BFFD1","#15FF86","#FF00CC","#A6FF73","#FF6800"];	
+
+	var lastX = startX;
+	var lastY = startY;
+
+	ctx.fillRect(10,10,10,10);
+
+	var m = new Image();
+	m.src = "CirculoCicromatico.png";
+	m.onload = function(){
+		imagemPronta = true;
+	};	
+	// c.addEventListener('mousemove', _mouseMove, false);
+
+	c.addEventListener('mousedown', _mouseDown, false);
+	c.addEventListener('mousemove', _mouseMove, false);
+	c.addEventListener('mouseup', _mouseUp, false);
+
+	
+	function _mouseDown(laranja){
+		//if( imagemPronta ){
+		//	ctx.drawImage( m, laranja.x, laranja.y);
+		//}
+			lastX = startX;
+			lastY = startY;
+			startX = laranja.x;
+			startY = laranja.y;
+			ctx.moveTo(laranja.x, laranja.y);
+			apertou = true;
+	}
+	function _mouseMove(laranja){
+	
+		if(apertou && startX != lastX && startY != lastY){
+			if(estadoAplicativo == "Livre"){
+			ctx.lineTo(laranja.x, laranja.y);
+			ctx.stroke();
+			}
+		}
+	}
+	function _mouseUp(laranja){
+		if(startX != lastX && startY != lastY){
+			var	raio = Math.sqrt(Math.pow((laranja.x - startX),2) + Math.pow((laranja.y - startY),2)) / 2;
+			var	inicio = 0;	
+			var	fim = 2 * Math.PI;
+			if(estadoAplicativo == "Reta"){
+			ctx.lineTo(laranja.x, laranja.y);
+			ctx.strokeStyle = color;
+			ctx.stroke();
+			}
+			if(estadoAplicativo == "Circulo"){
+			ctx.beginPath();	
+			ctx.arc(startX + (raio / 2), startY + (raio / 2),	raio,	inicio,	fim);
+			ctx.strokeStyle = color;
+			ctx.stroke();
+			}
+		}
+	apertou = false;
+	}
+	function setEstado(valor){
+		estadoAplicativo = valor;
+	}
+	function setColor(){
+		var index = Math.floor((Math.random()*11)+1);
+		color = arrayCores[index];
+	}
+	function setColor2(){
+		color = '#ff0000';
+	}
+
+</script>
+</body>
+<body>
+<button onclick="setEstado('Reta')">Reta</button>
+<button onclick="setEstado('Livre')">Livre</button>
+<button onclick="setEstado('Circulo')">Circulo</button>
+<button onclick="setColor()">SortColor</button>
+</body>
+</html>
